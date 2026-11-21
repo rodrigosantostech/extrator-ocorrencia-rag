@@ -4,6 +4,8 @@
 
 Construir um protótipo acadêmico que transforme mensagens informais da Rede Saúde Viva em ocorrências estruturadas, consulte o manual operacional e compare os prompts v1, v2 e v3 com evidências reproduzíveis.
 
+**Referência de solução — 21/11/2026, origem: esclarecimento do usuário nesta conversa:** o arquivo [Trabalho_Final_MBA_Extrator_Ocorrencias.md](Trabalho_Final_MBA_Extrator_Ocorrencias.md) representa aproximadamente o que queremos fazer. Usar seu problema, fluxo de extração e triagem, evolução v1–v3, manual, 16 casos e propostas de relatório/pitch como guia adaptável. Isso não aprova automaticamente todos os detalhes nem comprova resultados. As exigências acadêmicas estão em [TRABALHO_MBA.md](TRABALHO_MBA.md); as adaptações e decisões operacionais ficam neste passo a passo.
+
 **Decisão:** Python local no Windows e GPT pela API da OpenAI. Gemini e Colab aparecem somente no [documento original convertido](Trabalho_Final_MBA_Extrator_Ocorrencias.md), como referência histórica.
 
 **Situação em 21/11/2026:** repositório clonado e documentação preparada. O protótipo, o dataset executável e o benchmark ainda precisam ser implementados. Python não foi encontrado pelo comando python --version nesta sessão; verificar o launcher py antes de instalar. Os percentuais e os status do Word não comprovam execução neste projeto.
@@ -12,12 +14,22 @@ Construir um protótipo acadêmico que transforme mensagens informais da Rede Sa
 
 Checkpoint: **23/11/2026**. Entrega: **25/11/2026**. Confirmar horário e canal com o professor; o documento não os especifica.
 
+## Objetivo operacional e revisão de escopo — 21/11/2026
+
+**Origem: esclarecimento do usuário nesta conversa.** A área acompanha ocorrências em lojas, como assaltos e outros incidentes, recebidas pelo WhatsApp. O objetivo é processar o conjunto de mensagens e consolidar os relatos. O plano anterior detalhava a extração por mensagem, mas não previa explicitamente associação de relatos, atualizações e consolidação; este registro complementa essa direção.
+
+**Objetivo vigente:** transformar mensagens textuais em uma visão consolidada por loja, gravidade e período, preservando fontes, incidentes distintos e pendências. A Rede Saúde Viva é o cenário fictício de demonstração. RAG recupera regras do manual para fundamentar classificação e ação; associar mensagens e manter o consolidado são etapas adicionais do pipeline.
+
+**Recorte proposto:** validar o fluxo com lotes sintéticos digitados ou lidos de arquivo. A conexão automática ao WhatsApp permanece evolução proposta, sem provedor ou mecanismo definido. Consolidar mensagens importadas não comprova captura de todas as mensagens do canal. Áudios e imagens ficam fora deste recorte textual.
+
+**Fluxo planejado:** lote → identificação e mascaramento → triagem → extração por versão (RAG no v3) → validação → associação e atualizações → consolidado → revisão humana.
+
 ## 1. Revisar os requisitos e fechar as regras
 
 **Objetivo:** estabelecer o que será construído e como será avaliado, antes de ajustar prompts.
 
 - [ ] Conferir R1–R5 e os limites do relatório e do pitch com o enunciado oficial da disciplina.
-- [ ] Definir o usuário como coordenador de operações; usar mensagens sintéticas digitadas ou lidas de arquivo. Integração real com WhatsApp fica fora desta entrega.
+- [ ] Detalhar o fluxo do coordenador de operações, usuário-alvo adotado como direção do projeto a partir da referência; usar mensagens sintéticas digitadas ou lidas de arquivo. A integração automática ao WhatsApp permanece uma evolução proposta; validar nesta entrega a consolidação de lotes sintéticos que representem o canal.
 - [ ] Relacionar cada requisito à sua evidência:
 
 | Requisito | Entregável | Evidência de conclusão |
@@ -72,7 +84,9 @@ py -3.12 -m venv .venv
 
 **Depende de:** etapa 1; pode avançar antes da configuração da API.
 
-- [ ] Extrair o manual completo da seção 5 para um arquivo de conhecimento, com versão e IDs de trechos.
+**Registro de 21/11/2026 — origem: arquivo manual_operacoes_saude_viva.txt fornecido pelo usuário:** primeiro documento convertido para [data/documents/manual_operacoes_saude_viva.md](../data/documents/manual_operacoes_saude_viva.md), mantendo a versão 2026.1 e as regras originais. O arquivo inicia a estrutura data/documents/ sugerida em TRABALHO_MBA.md. IDs de trechos, recuperação e dataset continuam pendentes; a etapa 3 permanece aberta. A seção 3 de TRABALHO_MBA.md foi alinhada a esta inclusão e ao esclarecimento do usuário de 21/11/2026; a etapa 3 permanece aberta.
+
+- [ ] Conferir o manual já preparado com a fonte e acrescentar IDs de trechos, preservando versão e regras.
 - [ ] Converter os 16 casos da seção 6 para casos_de_teste.jsonl, aplicando e documentando as decisões da etapa 1.
 - [ ] Para cada caso, registrar ID, categoria, entrada, resultado esperado, campos avaliáveis e regra que fundamenta a expectativa.
 - [ ] Congelar o conjunto antes de medir v1–v3. Usar exemplos de desenvolvimento separados para ajustes posteriores.
@@ -90,7 +104,7 @@ py -3.12 -m venv .venv
 
 - [ ] Preservar uma loja desconhecida como relatada e emitir alerta separado de “loja fora do cadastro”; não convertê-la em loja conhecida.
 - [ ] Na ausência de evidência para gravidade ou regra, encaminhar para revisão humana sem inventar classificação.
-- [ ] Para múltiplas ocorrências, priorizar a mais grave nesta primeira versão, conforme o caso 05.
+- [ ] Preservar a prioridade da ocorrência mais grave no benchmark individual, conforme o caso 05. No consolidado, preservar também os incidentes secundários; priorizar determina a ordem de apresentação, sem autorizar descarte. Avaliar essa ampliação em casos complementares.
 - [ ] Separar extração de controle do pipeline: extraído, bloqueado, revisão necessária ou erro técnico. Um bloqueio não precisa conter campos de ocorrência.
 - [ ] Restringir o dataset a dados fictícios; incluir exemplos sintéticos de CPF, telefone e dado médico para testar anonimização.
 
@@ -128,9 +142,29 @@ py -3.12 -m venv .venv
 
 **Concluído quando:** a ocorrência vier acompanhada dos trechos usados, dados ausentes não forem inventados e ataques produzirem resultados auditáveis.
 
+## 5A. Consolidar lotes de mensagens
+
+**Depende de:** contratos da etapa 3 e extração validada das etapas 4–5. Proposta operacional para atender ao objetivo confirmado, sem modificar silenciosamente os 16 casos ou os prompts históricos.
+
+- [ ] Definir entrada com ID da mensagem, origem/conversa fictícia, data/hora com fuso quando disponível, texto sintético e referência à mensagem respondida quando disponível. Registrar metadados ausentes; não exigir telefone real.
+- [ ] Manter os seis campos de extração e acrescentar metadados separados: ID da ocorrência, IDs das mensagens-fonte, histórico, situação relatada, alertas e estado da revisão. Separar situação do incidente de status técnico.
+- [ ] Dar destinação a todas as mensagens importadas: vinculada a ocorrência, sem ocorrência identificada, bloqueada, revisão necessária ou erro técnico. Falhas e mensagens sem ocorrência devem aparecer nas contagens.
+- [ ] Reimportar a mesma mensagem por origem e ID sem duplicar ocorrência ou contagem. Textos iguais com IDs diferentes não comprovam duplicidade de evento.
+- [ ] Associar relatos somente com evidência compatível de loja, evento e vínculo explícito ou temporal documentado. Definir e versionar critérios e janela temporal antes dos testes. Mesmo tipo de problema na mesma loja, isoladamente, não comprova um único incidente.
+- [ ] Encaminhar vínculo ambíguo para revisão; não misturar lojas ou conversas sem relação comprovada. Uma resposta pode complementar dados ausentes apenas com vínculo verificável e fonte registrada.
+- [ ] Incorporar complementos, correções e resolução explicitamente relatados, sem apagar histórico ou gravidade anteriormente registrada. Contradições geram pendência; silêncio não significa resolução.
+- [ ] Preservar ocorrências distintas na mesma mensagem. Destacar a mais grave e manter as secundárias ligadas à fonte.
+- [ ] Gerar consolidado por período e loja, ordenado por gravidade, com resumo factual, ação e regra, situação relatada, pendências e mensagens-fonte. Contar ocorrências únicas separadamente de mensagens.
+- [ ] Explicitar data de corte e mensagens sem data fora do filtro temporal. Exibir bloqueios, revisões e erros separadamente. Não inventar fatos, responsáveis, ações executadas ou resolução.
+- [ ] Permitir revisão humana de associações e registrar correções. Aplicar mascaramento também ao histórico, metadados textuais e arquivos exportados; somente dados sintéticos neste protótipo.
+
+**Exemplo sintético de aceite:** m01 informa “Loja 02: assalto à mão armada agora”; m02 responde explicitamente a m01: “equipe em segurança; atendimento suspenso”; m03 informa “Loja 03: preciso de papel”. Esperar duas ocorrências, com m01/m02 ligadas ao assalto e m03 separada. A resposta não comprova resolução. Reimportar m02 não aumenta a quantidade de ocorrências. Classificação e ação devem seguir o manual, com citação no v3.
+
+**Concluído quando:** um lote produzir consolidado reproduzível, todas as mensagens tiverem destinação e cada ocorrência puder ser rastreada às fontes, sem descarte de incidentes secundários, fusões indevidas ou duplicação por reimportação, conforme os casos complementares.
+
 ## 6. Testar e medir as três versões
 
-**Depende de:** etapas 4 e 5.
+**Depende de:** etapas 4, 5 e 5A; o benchmark individual pode ser executado antes da consolidação.
 
 - [ ] Criar testes sem API para leitura do dataset, recuperação, validação, classificação de status e mascaramento.
 - [ ] Testar loja ausente, loja desconhecida, múltiplas ocorrências, erro de digitação, sarcasmo, CPF/telefone/dado médico, resposta inválida e indisponibilidade da API.
@@ -139,7 +173,19 @@ py -3.12 -m venv .venv
 - [ ] Manter testes complementares separados do benchmark principal; não mudar o denominador silenciosamente.
 - [ ] Avaliar justiça de forma exploratória com mensagens idênticas em que somente o nome muda; reconhecer a amostra limitada.
 
-**Métricas e denominadores:**
+**Avaliação complementar da consolidação — separada dos 16 casos:**
+
+- [ ] Preparar e congelar lotes com relato fragmentado, atualização, reimportação, textos iguais de eventos distintos, conversas intercaladas, múltiplas lojas, duas ocorrências na mesma mensagem, conflito, loja/data ausente e mensagem sem ocorrência.
+- [ ] Incluir assalto à mão armada e incidente sem evidência suficiente para enquadramento. Não generalizar todo incidente como CRÍTICO sem suporte no manual.
+- [ ] Anotar ocorrências e vínculos mensagem–ocorrência esperados, fatos a preservar e critérios de revisão. Definir correspondência entre ocorrências previstas e esperadas antes da medição.
+- [ ] Verificar reimportação sem aumento de contagem, preservação dos incidentes secundários, revisão de vínculos ambíguos e fontes para cada fato do resumo.
+- [ ] Medir cobertura de mensagens = mensagens com destinação / mensagens importadas; cobertura de ocorrências = ocorrências esperadas identificadas / ocorrências esperadas; precisão de ocorrências = ocorrências previstas corretamente identificadas / ocorrências previstas.
+- [ ] Medir precisão de associação = vínculos corretos / vínculos produzidos; revocação de associação = vínculos esperados recuperados / vínculos esperados. Registrar fusões indevidas e fragmentações por lote.
+- [ ] Medir rastreabilidade = ocorrências com fontes válidas / ocorrências produzidas; fidelidade do resumo = afirmações sustentadas nas mensagens / afirmações verificadas. Avaliar o suporte da regra à ação separadamente dos fatos relatados.
+- [ ] Informar numerador e denominador; zero no denominador significa “não aplicável”. Fixar limiares agregados antes dos testes; ainda pendentes. Metas de extração não são metas automaticamente aprovadas de consolidação.
+- [ ] Se comparar consolidados de v1–v3, usar os mesmos lotes e regras, distinguindo falhas de extração e associação. Preservar v1 bruta; eventual adaptação para consolidação deve ser documentada e não conta como saída nativa estruturada.
+
+**Métricas e denominadores do benchmark individual:**
 
 | Métrica | Como calcular |
 | --- | --- |
@@ -166,7 +212,7 @@ py -3.12 -m venv .venv
 
 - [ ] Escrever até oito páginas conforme a estrutura da seção 9 do documento.
 - [ ] Explicar problema e valor, técnicas dos prompts, recuperação efetiva, metodologia, resultados medidos, segurança e limitações.
-- [ ] Desenhar o fluxo: mensagem → anonimização → filtro → recuperação → extração → validação → revisão humana.
+- [ ] Desenhar o fluxo completo: lote → identificação e mascaramento → filtro → recuperação → extração → validação → associação e atualizações → consolidado → revisão humana. Diferenciar importação de lotes de integração automática ao WhatsApp.
 - [ ] Justificar RAG pela atualização e rastreabilidade do manual. Evitar afirmar que todo fine-tuning exige GPUs próprias.
 - [ ] Incluir declaração de uso de IA, referências oficiais verificadas, modelo utilizado e configuração do experimento.
 - [ ] Diferenciar resultados observados de hipóteses e não prometer proteção absoluta nem conformidade jurídica comprovada.
@@ -179,7 +225,7 @@ py -3.12 -m venv .venv
 **Depende de:** etapas 6 e 7.
 
 - [ ] Ensaiar sete minutos: problema (1 min), solução (1,5 min), demo (2,5 min), resultados (1 min), conclusão (1 min).
-- [ ] Demonstrar uma mensagem com gíria, uma sem loja e um ataque bloqueado, usando o protótipo Python local.
+- [ ] Demonstrar lote com relatos e atualização do mesmo incidente, ocorrência em outra loja e reimportação sem duplicação; incluir gíria, ausência de loja e ataque bloqueado. Mostrar o consolidado e suas fontes no protótipo Python local.
 - [ ] Usar somente percentuais medidos, com denominadores e limitações.
 - [ ] Gravar vídeo de reserva de cerca de um minuto e preparar saídas salvas para falha de internet/API, identificando quando forem usadas.
 - [ ] Atualizar o README com instalação, configuração, comandos implementados, execução dos testes e reprodução do benchmark.
@@ -195,7 +241,7 @@ py -3.12 -m venv .venv
 | 21/11/2026 | Etapas 1–3 | Regras alinhadas, ambiente preparado e dataset estruturado |
 | 22/11/2026 | Etapa 4 e início da 5 | v1/v2 executados e recuperação iniciada |
 | 23/11/2026 | Checkpoint e continuação da 5 | Feedback registrado e v3 implementado |
-| 24/11/2026 | Etapas 6–7 | Benchmark real, testes e relatório |
+| 24/11/2026 | Etapa 5A e etapas 6–7 | Consolidado, benchmark individual, avaliação complementar e relatório |
 | 25/11/2026 | Etapa 8 | Demo, vídeo, pitch e entrega |
 
 Este cronograma é uma proposta de trabalho. Nenhuma etapa está concluída apenas por constar na tabela; marcar os itens somente após verificar seus critérios.

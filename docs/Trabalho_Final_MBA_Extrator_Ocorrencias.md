@@ -1,3 +1,5 @@
+> **Papel deste documento — esclarecimento do usuário em 21/11/2026:** este arquivo representa, em linhas gerais, o que queremos construir. É uma referência aproximada para problema, fluxo, prompts v1–v3, manual, casos de teste, relatório e pitch. Seus detalhes podem ser adaptados conforme os requisitos do professor e as decisões registradas no [passo a passo](PASSO_A_PASSO.md). As afirmações de execução, percentuais e proteções no texto original não são evidências de resultados deste repositório.
+
 > **Nota de conversão:** conteúdo transcrito do documento Word original. As menções a Gemini e Colab foram preservadas por fidelidade à fonte. A implementação planejada usa Python local e GPT pela API da OpenAI; consulte o [passo a passo](PASSO_A_PASSO.md). Os resultados, proteções e status declarados abaixo ainda não foram comprovados por execução neste repositório.
 
 # TRABALHO FINAL - INTELIGÊNCIA ARTIFICIAL GENERATIVA

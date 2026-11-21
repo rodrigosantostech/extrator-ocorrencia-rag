@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "extrator-ocorrencia-rag"
+version = "0.1.0"
+description = "Base local do protótipo de ocorrências da Rede Saúde Viva"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = []
+
+[project.scripts]
+extrator-ocorrencias = "extrator_ocorrencia.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

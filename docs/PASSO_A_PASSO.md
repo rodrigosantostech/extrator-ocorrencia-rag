@@ -80,6 +80,17 @@ py -3.12 -m venv .venv
 
 **Concluído quando:** ambiente e dependências forem reproduzíveis e a chamada mínima funcionar com modelo e configuração registrados.
 
+### Base Python — 21/11/2026
+
+**Origem:** solicitação do usuário para estruturar o projeto e, em seguida, adiar a etapa da chave. Acréscimo operacional à etapa 2; as etapas completas permanecem pendentes.
+
+- Criados pacote instalável em `src/extrator_ocorrencia/`, manifesto `pyproject.toml`, comando de diagnóstico do manual e configuração centralizada de caminhos. O requisito inicial é Python 3.12 ou superior, com preparação orientada para 3.12.
+- A estrutura usa somente a biblioteca padrão para permitir desenvolvimento local sem credenciais. A API, o modelo, seus parâmetros e as bibliotecas de validação e TF-IDF serão definidos ou integrados nas etapas correspondentes. Não foram fixadas versões de dependências ainda não validadas.
+- Criados `.gitignore`, `.env.example` sem credenciais, seis testes locais e pastas reservadas para casos, exemplos e resultados. O código não carrega `.env` nem realiza chamadas externas.
+- Validação local: Python 3.12.10 instalado para o usuário, ambiente `.venv` criado e pacote 0.1.0 instalado com `pip install -e .`. Os seis testes passaram; o diagnóstico por módulo e pelo comando instalado retornou `OK`, com leitura de 1.612 caracteres do manual. Esses resultados medem apenas os componentes locais implementados.
+- A leitura do manual não comprova recuperação RAG, classificação, segurança operacional ou consolidação. Os 16 casos continuam pendentes; nenhuma métrica de extração foi medida.
+- Rastreabilidade: preparação parcial de E1; organização inicial para R3, R4 e R5. R1 e R2 e os entregáveis E2–E4 não foram implementados nesta mudança.
+
 ## 3. Preparar manual, dataset e contrato de saída
 
 **Depende de:** etapa 1; pode avançar antes da configuração da API.

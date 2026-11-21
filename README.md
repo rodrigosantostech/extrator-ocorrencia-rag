@@ -25,7 +25,7 @@ O RAG fornece as regras de classificação e ação. A consolidação relaciona 
 
 ## Estado atual
 
-A documentação e o primeiro manual da base de conhecimento foram preparados. O protótipo, a integração com a API, o dataset executável e o benchmark ainda serão implementados seguindo o passo a passo.
+A documentação, o primeiro manual e a estrutura inicial do pacote Python foram preparados. Há configuração de caminhos, diagnóstico local do manual e testes sem API. Extração v1–v3, recuperação RAG, consolidação, dataset executável e benchmark continuam pendentes. A configuração da chave foi adiada por solicitação do usuário em 21/11/2026.
 
 Conforme esclarecimento do usuário em 21/11/2026, o documento convertido representa, em linhas gerais, o que queremos fazer; orienta a solução sem fixar todos os detalhes. Suas referências a Gemini/Colab ficam como histórico, pois a implementação planejada usa Python no Windows e API da OpenAI. Percentuais, proteções e status declarados no Word continuam sem comprovação neste repositório.
 
@@ -37,4 +37,32 @@ Conforme esclarecimento do usuário em 21/11/2026, o documento convertido repres
 4. Implementar recuperação, v3, validações, consolidação em lote e avaliações separadas de extração e consolidação.
 5. Finalizar relatório de até oito páginas e pitch de sete minutos para **25/11/2026**.
 
-Os comandos de instalação, execução e teste do aplicativo serão documentados quando o protótipo estiver implementado.
+## Preparação e comandos locais
+
+Execute na raiz do repositório, no Windows PowerShell, com Python 3.12 instalado. Após a instalação do Python, reabra o terminal para atualizar os comandos disponíveis:
+
+```powershell
+py -3.12 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -e .
+.\.venv\Scripts\python.exe -m extrator_ocorrencia diagnostico
+.\.venv\Scripts\python.exe -m unittest discover -s tests -v
+```
+
+Os comandos usam diretamente o ambiente virtual e dispensam sua ativação. Para consultar o manual a partir de outro diretório, informe `diagnostico --raiz C:\Dev\extrator-ocorrencia-rag`. O diagnóstico retorna código 0 quando o manual é legível, está em UTF-8 e não está vazio; retorna 1 em caso de falha. Isso verifica a leitura do arquivo, sem validar suas regras nem implementar recuperação.
+
+A base atual usa somente a biblioteca padrão. O `pip` pode acessar a rede para obter a ferramenta de empacotamento `setuptools`. SDK da OpenAI, validação estruturada e recuperação lexical serão acrescentados nas etapas correspondentes; suas versões serão fixadas após validação. O arquivo `.env.example` está reservado para configuração futura; o código atual não carrega arquivos `.env`.
+
+## Organização inicial
+
+| Caminho | Finalidade |
+| --- | --- |
+| `pyproject.toml` | Metadados do pacote, requisito de Python e comando `extrator-ocorrencias` |
+| `src/extrator_ocorrencia/config.py` | Caminhos locais centralizados |
+| `src/extrator_ocorrencia/cli.py` | Diagnóstico do manual, sem API |
+| `tests/` | Testes locais com `unittest` |
+| `data/documents/` | Base documental existente |
+| `data/datasets/` | Espaço reservado aos casos de avaliação; ainda vazio |
+| `data/examples/` | Espaço reservado a exemplos sintéticos de desenvolvimento; ainda vazio |
+| `results/` | Resultados locais futuros, ignorados pelo Git |
+
+As pastas reservadas contêm apenas `.gitkeep`. Nenhum conjunto de casos foi criado ou congelado. Resultados selecionados para entrega deverão ser exportados e versionados explicitamente, após revisão de privacidade; a pasta local ignorada não constitui evidência entregue.

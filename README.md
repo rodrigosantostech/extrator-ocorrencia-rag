@@ -22,6 +22,11 @@ O RAG fornece as regras de classificação e ação. A consolidação relaciona 
 ## Base de conhecimento
 
 - [Manual de operações da Rede Saúde Viva](data/documents/manual_operacoes_saude_viva.md): primeiro documento da base, versão 2026.1, com cadastro de lojas, classificação de ocorrências e privacidade. Convertido do arquivo fornecido pelo usuário, preservando o conteúdo operacional.
+- [Manual de operações v2026.3](data/documents/manual_operacoes_saude_viva_v2026.3.md): adequação da v2026.2 elaborada pelo usuário, com regras do v2026.1 marcadas e regras novas identificadas como propostas a validar, incluindo consultas de preço, procura de produtos, segurança patrimonial, consolidação e trechos identificados para recuperação. Versão em Word em [docs/anexos/](docs/anexos/).
+
+## Casos complementares
+
+[data/datasets/complementares/](data/datasets/complementares/) reúne 71 casos sintéticos (IDs 17 a 87), separados do benchmark principal de 16 casos, a exportação textual do grupo de WhatsApp gerada a partir deles e o gabarito da consolidação do lote. Os casos ainda não foram executados em nenhuma versão de prompt.
 
 ## Estado atual
 
@@ -61,8 +66,9 @@ A base atual usa somente a biblioteca padrão. O `pip` pode acessar a rede para 
 | `src/extrator_ocorrencia/cli.py` | Diagnóstico do manual, sem API |
 | `tests/` | Testes locais com `unittest` |
 | `data/documents/` | Base documental existente |
-| `data/datasets/` | Espaço reservado aos casos de avaliação; ainda vazio |
+| `data/datasets/` | Casos de avaliação; contém apenas os casos complementares em `complementares/` |
+| `docs/anexos/` | Versão em Word do manual v2026.3 |
 | `data/examples/` | Espaço reservado a exemplos sintéticos de desenvolvimento; ainda vazio |
 | `results/` | Resultados locais futuros, ignorados pelo Git |
 
-As pastas reservadas contêm apenas `.gitkeep`. Nenhum conjunto de casos foi criado ou congelado. Resultados selecionados para entrega deverão ser exportados e versionados explicitamente, após revisão de privacidade; a pasta local ignorada não constitui evidência entregue.
+As pastas `data/examples/` e `results/` contêm apenas `.gitkeep`. Os casos complementares estão preparados, mas os 16 casos do benchmark principal ainda não foram criados nem congelados. Resultados selecionados para entrega deverão ser exportados e versionados explicitamente, após revisão de privacidade; a pasta local ignorada não constitui evidência entregue.

@@ -91,6 +91,17 @@ py -3.12 -m venv .venv
 - A leitura do manual não comprova recuperação RAG, classificação, segurança operacional ou consolidação. Os 16 casos continuam pendentes; nenhuma métrica de extração foi medida.
 - Rastreabilidade: preparação parcial de E1; organização inicial para R3, R4 e R5. R1 e R2 e os entregáveis E2–E4 não foram implementados nesta mudança.
 
+### Relatório HTML — 23/11/2026
+
+**Origem:** solicitação do usuário nesta conversa. Regra operacional complementar para a apresentação de resultados de E1 e apoio à demonstração de E4; não modifica os requisitos do professor.
+
+- Registrada em `AGENTS.md` e `CLAUDE.md` a obrigação de gerar relatório HTML local ao término de cada execução do aplicativo Python, incluindo resultados e falhas tratadas, com mascaramento e escape de conteúdo externo.
+- Relatórios devem ficar em `results/` e nunca ser enviados ao repositório. O `.gitignore` bloqueia arquivos `.html`, inclusive com letras maiúsculas na extensão, e permite somente `docs/examples/resultado_exemplo.html`, exemplo sintético e sem resultados medidos.
+- Complemento solicitado pelo usuário em 23/11/2026: o HTML deve apresentar o resultado completo, com identificação e configuração, comparação v1–v3, técnicas, saídas possíveis, detalhe de casos, fontes e validações, consolidado e histórico, métricas com denominadores, segurança e auditoria. O exemplo passa a cobrir essas seções, com dados demonstrativos e versões não executadas explicitamente identificados. Regras equivalentes registradas nos dois arquivos de instruções; nenhuma avaliação foi executada nesta revisão.
+- Verificação do exemplo ampliado: 11 seções com âncoras válidas, 16 casos de referência separados em 12 operacionais e 4 ataques, cinco blocos JSON parseáveis, citação e ação demonstrativas presentes literalmente no manual. Filtros, busca sem distinção de acentos e expansão/restauração para impressão conferidos com Node; apresentação renderizada no Edge e captura inspecionada. Essas verificações avaliam somente o HTML de exemplo, não o protótipo nem o benchmark.
+- Preferência visual confirmada pelo usuário em 23/11/2026: layout bonito e profissional passa a ser obrigatório, com hierarquia tipográfica, cores consistentes, cartões, tabelas, responsividade, acessibilidade e impressão organizada. Exemplo refinado em CSS local; preservar o resultado completo é parte do critério de apresentação.
+- Esta alteração registra a regra e prepara a política de versionamento. A geração automática de HTML no comando `diagnostico` ainda precisa ser implementada; o código atual continua imprimindo JSON no terminal.
+
 ## 3. Preparar manual, dataset e contrato de saída
 
 **Depende de:** etapa 1; pode avançar antes da configuração da API.

@@ -100,6 +100,23 @@ O repositório ainda não tem implementação ou benchmark comprovado. Verifique
 - Execute comandos com sintaxe compatível com Windows PowerShell.
 - Não use dados pessoais reais.
 
+## Relatório HTML obrigatório ao finalizar o Python
+
+- Toda execução do aplicativo Python deve gerar, ao finalizar, um arquivo `.html` local com o resultado, incluindo o estado da execução, os dados produzidos e eventuais falhas tratadas. Ao implementar ou alterar comandos do aplicativo, garanta essa geração e informe o caminho do arquivo ao usuário.
+- O HTML deve apresentar o resultado completo da execução, com visão geral e detalhamento auditável; um resumo de estado ou uma mensagem de sucesso não atende a essa obrigação.
+- Identifique execução, data/hora e fuso, comando, versão do código, modelo, parâmetros, versões dos prompts, manual e dataset, incluindo identificação do congelamento quando houver. Registre valores ausentes como pendentes ou indisponíveis, sem inferi-los.
+- Inclua comparação lado a lado de v1, v2 e v3: técnicas efetivamente usadas, mudanças e hipóteses, entrada comum, saídas brutas e estruturadas, validações, acertos, falhas, regressões, latência, chamadas e tokens/custo quando disponíveis. Distinga técnicas planejadas de implementadas e executadas; versões não executadas devem aparecer explicitamente como tais. Preserve a saída livre de v1.
+- Cubra todas as saídas e destinações aplicáveis: extração válida, bloqueio, revisão humana, erro técnico, mensagem sem ocorrência, loja ausente ou desconhecida, evidência insuficiente, múltiplas ocorrências, atualizações e conflitos. Mostre os motivos e mantenha status técnico, gravidade, situação do incidente e revisão humana separados.
+- Apresente os seis campos de extração quando aplicáveis, os trechos RAG efetivamente recuperados com IDs, pontuações e versão da fonte, a citação literal e as verificações de JSON, loja, citação, gravidade e ação. Não apresente exemplos ou regras transcritas como recuperação executada.
+- Para lotes, inclua consolidado por loja, prioridade e período, ocorrências secundárias, histórico, IDs das mensagens-fonte, destinação de todas as mensagens e contagens separadas de mensagens e ocorrências. Explicite reimportações, vínculos ambíguos e pendências de revisão.
+- Na avaliação, detalhe cada caso e versão com entrada, expectativa, resposta, critérios e julgamento; separe os 16 casos principais dos testes complementares. Mostre métricas com numerador, denominador, fórmula e limitações, além de resultados de segurança, privacidade e viés. Denominador zero é não aplicável; ausência de execução não é desempenho de 0%.
+- O relatório deve ser navegável e legível, com tabelas comparativas e detalhes expansíveis para saídas extensas. Diferencie exemplos sintéticos, metas, resultados medidos e itens pendentes em todas as seções. Não preencha lacunas com resultados inventados nem declare proteção absoluta.
+- Adote um layout visual bonito, profissional e consistente: hierarquia tipográfica clara, paleta harmoniosa, espaçamento equilibrado, cartões de indicadores, estados com texto e cores, tabelas legíveis e navegação simples. Garanta responsividade para celular, contraste acessível, foco visível e impressão organizada. O acabamento visual é obrigatório e deve preservar a completude e a legibilidade dos resultados; confira a renderização no navegador antes de concluir alterações de apresentação.
+- Salve os relatórios de execução em `results/`, em UTF-8. Aplique o mascaramento e as mesmas restrições de privacidade das demais saídas; escape conteúdo externo antes de inseri-lo no HTML.
+- Os arquivos HTML gerados são artefatos locais e nunca devem ser adicionados, enviados ou publicados no repositório. Não use `git add -f` para contornar essa regra.
+- Mantenha apenas um HTML de exemplo no repositório: `docs/examples/resultado_exemplo.html`. Essa é a única exceção ao bloqueio de HTML no `.gitignore`; deve conter somente dados sintéticos, estar identificado como exemplo e não representar resultados medidos.
+- Antes de qualquer commit, confira que nenhum HTML além desse exemplo está incluído. O HTML é uma apresentação complementar: preserve os registros brutos necessários à auditoria, sujeitos às regras de privacidade e de versionamento vigentes.
+
 ## Contrato de saída
 
 Campos planejados:

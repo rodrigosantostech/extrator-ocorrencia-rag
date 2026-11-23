@@ -17,3 +17,7 @@ htmlcov/
 /data/local/
 .vscode/
 .idea/
+
+# Relatórios HTML locais; um único exemplo pode ser versionado.
+*.[hH][tT][mM][lL]
+!/docs/examples/resultado_exemplo.html

@@ -8,10 +8,20 @@ version = "0.1.0"
 description = "Base local do protótipo de ocorrências da Rede Saúde Viva"
 readme = "README.md"
 requires-python = ">=3.12"
-dependencies = []
+dependencies = ["openai==3.58.0"]
+
+[project.optional-dependencies]
+dev = ["pyinstaller==6.22.3", "ruff==0.17.6"]
 
 [project.scripts]
 extrator-ocorrencias = "extrator_ocorrencia.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I", "B"]

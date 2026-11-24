@@ -1,0 +1,176 @@
+{
+  "titulo": "Manual de Operações Rede Saúde Viva",
+  "versao": "2026.3",
+  "formato": "manual-modular-1",
+  "data": "2026-11-23",
+  "origem": "Reorganização do manual existente, autorizada pelo usuário nesta conversa.",
+  "natureza": "Base fictícia e sintética; propostas pendentes preservadas; não representa política de empresa real.",
+  "original_sha256": "fc83c434b2221d1d5b6c9cf18633e3b56f043721a0f5018dfd3a442169457007",
+  "original_referencia": "docs/referencias/manual_operacoes_saude_viva_v2026.3.md",
+  "ordem_original": [
+    "identificacao",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "11",
+    "12",
+    "13",
+    "14",
+    "15",
+    "16",
+    "anexo_a",
+    "anexo_b"
+  ],
+  "documentos": [
+    {
+      "arquivo": "00_contexto.md",
+      "titulo": "Identificação e escopo",
+      "partes": [
+        "identificacao",
+        "1"
+      ],
+      "secoes_indexadas": [],
+      "anexo_rag": false,
+      "sha256": "8a4321939d2211eb4d2d99e680122ba3df74811be6d17a363442ffbe64edd977"
+    },
+    {
+      "arquivo": "01_lojas.md",
+      "titulo": "Diretório de lojas",
+      "partes": [
+        "2"
+      ],
+      "secoes_indexadas": [
+        2
+      ],
+      "anexo_rag": false,
+      "sha256": "e79d416e932d887f3fb3a8e4d5a4c2a389b548dc2b7cfd4ff83623f30bfaa172"
+    },
+    {
+      "arquivo": "02_fluxo_e_contrato.md",
+      "titulo": "Fluxo e contrato de extração",
+      "partes": [
+        "3",
+        "4"
+      ],
+      "secoes_indexadas": [
+        4
+      ],
+      "anexo_rag": false,
+      "sha256": "f11bf32508659f527a705339fe139a16e238661da22653cc31666d70edc99751"
+    },
+    {
+      "arquivo": "03_gravidade_e_decisao.md",
+      "titulo": "Gravidade, ações e decisão",
+      "partes": [
+        "5",
+        "6"
+      ],
+      "secoes_indexadas": [
+        5,
+        6
+      ],
+      "anexo_rag": false,
+      "sha256": "11304a8d08ca9661588d80d68929047415fa716534ac7384ba13a0161d45905a"
+    },
+    {
+      "arquivo": "04_taxonomia.md",
+      "titulo": "Taxonomia de ocorrências",
+      "partes": [
+        "7"
+      ],
+      "secoes_indexadas": [
+        7
+      ],
+      "anexo_rag": false,
+      "sha256": "7ace3c22d4e13ec84975e293d43e3c66abfb81ec9105654557872b843f1b081a"
+    },
+    {
+      "arquivo": "05_prioridade.md",
+      "titulo": "Pontuação e prioridade",
+      "partes": [
+        "8"
+      ],
+      "secoes_indexadas": [
+        8
+      ],
+      "anexo_rag": false,
+      "sha256": "5d1e4609643ca986a5cda1b5edd4554aeb4e68673c384532fc909ffad8c32c1a"
+    },
+    {
+      "arquivo": "06_linguagem_e_equidade.md",
+      "titulo": "Linguagem informal e equidade",
+      "partes": [
+        "9",
+        "12"
+      ],
+      "secoes_indexadas": [
+        9,
+        12
+      ],
+      "anexo_rag": false,
+      "sha256": "986985accca33b8c17a535b5515bc4656aa5874d4b2f8561d7d72a604d3c9ffd"
+    },
+    {
+      "arquivo": "07_seguranca_e_privacidade.md",
+      "titulo": "Segurança e privacidade",
+      "partes": [
+        "10",
+        "11"
+      ],
+      "secoes_indexadas": [],
+      "anexo_rag": false,
+      "sha256": "2fc3aedf03eaeb90314cd31a12c6c59a10d9d460517f1afa06a068144b791762"
+    },
+    {
+      "arquivo": "08_avaliacao_e_historico.md",
+      "titulo": "Avaliação, rastreabilidade e decisões",
+      "partes": [
+        "13",
+        "14",
+        "15"
+      ],
+      "secoes_indexadas": [],
+      "anexo_rag": false,
+      "sha256": "53062fd2757d893abf9ce1eee1a2322a890eab93a4f80fc9db3f6f318b34ff2a"
+    },
+    {
+      "arquivo": "09_consolidacao.md",
+      "titulo": "Consolidação de mensagens",
+      "partes": [
+        "16"
+      ],
+      "secoes_indexadas": [
+        16
+      ],
+      "anexo_rag": false,
+      "sha256": "d3e3e2b415d55ca99334db56cd9d013135a4eaa21e5a60873235078d98419642"
+    },
+    {
+      "arquivo": "10_exemplos.md",
+      "titulo": "Exemplos sintéticos de saída",
+      "partes": [
+        "anexo_a"
+      ],
+      "secoes_indexadas": [],
+      "anexo_rag": false,
+      "sha256": "89528e4f3ef989753331d5ce80b66ecf37914fef85c4e67f88dc68ccda356acd"
+    },
+    {
+      "arquivo": "11_resumo_rag.md",
+      "titulo": "Resumo identificado para recuperação",
+      "partes": [
+        "anexo_b"
+      ],
+      "secoes_indexadas": [],
+      "anexo_rag": true,
+      "sha256": "25a065a22216b758a3c752c9e401ada1099e9c9668bfb88e3a6c653e6bb4a214"
+    }
+  ]
+}

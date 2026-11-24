@@ -88,6 +88,11 @@ O repositório ainda não tem implementação ou benchmark comprovado. Verifique
 
 ## Prática de implementação
 
+- Aplique SOLID como orientação para coesão e dependências, sem criar camadas ou abstrações desnecessárias. Prefira soluções KISS e YAGNI: não implemente extensões, opções ou generalizações sem necessidade confirmada.
+- Evite duplicação com DRY quando houver regra ou comportamento realmente compartilhado; não una trechos apenas parecidos se isso esconder responsabilidades distintas.
+- Em Python, siga PEP 8 e use o Ruff configurado no `pyproject.toml` para formatação e lint. Inclua anotações de tipo nas interfaces públicas e mantenha funções pequenas, nomes descritivos e responsabilidades coesas.
+- Trate erros de forma explícita e específica. Não capture `Exception` indiscriminadamente nem esconda falhas inesperadas; em limites de integração, capture somente as exceções esperadas e registre uma falha sanitizada conforme o contrato do aplicativo.
+- Refatore preservando o comportamento observável. Acrescente testes focados para mudanças de comportamento e execute o lint e os testes relevantes antes de concluir.
 - Faça alterações cirúrgicas e verificáveis.
 - Siga padrões existentes ou, antes de criar padrões novos, justifique o desvio.
 - Centralize modelo, parâmetros e acesso à API.

@@ -2,7 +2,9 @@
 
 Projeto acadêmico de extração e triagem de mensagens operacionais da empresa fictícia **Rede Saúde Viva**, com comparação de prompts v1, v2 e v3, consulta ao manual operacional e avaliação de segurança.
 
-A implementação planejada usa **Python local no Windows e GPT pela API da OpenAI**.
+O protótipo usa **Python local no Windows e a API da OpenAI**. Hoje oferece dois modos: **extrair uma ocorrência de uma mensagem**, comparando v1, v2 e v3, e **consultar o manual operacional com fontes citadas**. As execuções tentam gerar relatório HTML e registro JSON locais; os limites de geração estão descritos abaixo.
+
+O público-alvo é a área de operações que acompanha incidentes em lojas. Este README explica a finalidade, as técnicas e os passos para instalar, executar e conferir o protótipo. Use somente dados fictícios ou sintéticos.
 
 ## Documentação
 
@@ -18,6 +20,42 @@ A implementação planejada usa **Python local no Windows e GPT pela API da Open
 Fluxo planejado: lote de mensagens → mascaramento e triagem → extração e consulta ao manual → validação → associação de relatos e atualizações → consolidado → revisão humana.
 
 O RAG fornece as regras de classificação e ação. A consolidação relaciona as mensagens e preserva ocorrências distintas. O protótipo deve validar lotes sintéticos por arquivo; a conexão automática ao WhatsApp permanece uma evolução proposta, sem conector implementado ou definido. Áudios e imagens ficam fora do recorte textual.
+
+## Por que criar este assistente com RAG?
+
+Relatos operacionais chegam em mensagens informais, com abreviações, erros de digitação e informações incompletas. A área de operações precisa identificar a loja, entender o ocorrido, consultar a regra aplicável e decidir o que deve receber atenção primeiro. Fazer essa leitura e cruzar cada relato com o manual é a tarefa que o protótipo pretende apoiar; a redução de tempo e de erros ainda precisa ser medida.
+
+A IA generativa é usada para interpretar o texto e produzir uma descrição estruturada. A hipótese é que ela consiga lidar com variações de linguagem sem exigir uma regra fixa para cada forma de escrever. Regras determinísticas continuam úteis para limites de entrada, mascaramento, validação de formato e conferência de citações.
+
+**RAG (geração aumentada por recuperação)** conecta essa interpretação às regras documentadas da Rede Saúde Viva. Antes de responder, o sistema busca trechos relevantes do manual e os fornece ao modelo como contexto. Isso permite:
+
+- **Fundamentar a orientação:** classificação e ação devem se apoiar nas regras recuperadas, com citação literal no v3.
+- **Rastrear a fonte:** cada trecho registra ID, documento, versão, hash e pontuação de recuperação.
+- **Manter o conhecimento separado do modelo:** as regras podem ser revisadas nos documentos e no manifesto, sem treinar novamente o modelo.
+- **Explicitar limites:** evidência insuficiente, propostas pendentes e falhas de validação precisam aparecer para revisão humana.
+
+O RAG foi escolhido porque a informação específica está em um manual versionado. O ajuste fino de parâmetros (*fine-tuning*) pode ser útil para aprender padrões de tarefa ou estilo, mas não é necessário para disponibilizar essas regras na consulta. A multimodalidade fica fora do recorte atual, que recebe apenas texto. A recuperação não garante que o trecho encontrado seja suficiente nem que a interpretação esteja correta.
+
+## Técnicas utilizadas
+
+| Técnica | Aplicação no código atual | Finalidade |
+| --- | --- | --- |
+| Zero-shot | v1 recebe uma instrução curta, sem exemplos e com resposta livre | Preservar uma referência inicial de comparação |
+| Persona e few-shot | v2 define o papel de assistente operacional e apresenta um exemplo de entrada e JSON | Orientar a tarefa e demonstrar o formato esperado |
+| JSON Schema estrito | v2, v3 e etapas estruturadas de consulta e segurança | Restringir campos e tipos; validação local complementa o formato |
+| Encadeamento de prompts | v3 faz filtro de segurança e depois extração; `consultar` faz filtro e depois resposta | Separar a análise de segurança da geração, quando o fluxo prossegue |
+| RAG lexical | TF-IDF e similaridade de cosseno sobre o manual v2026.3 | Recuperar até três trechos com pontuação positiva, mais privacidade obrigatória |
+| Validação e minimização | Mascaramento por padrões, filtros locais, validação de campos e citações | Reduzir exposição de dados e reter respostas inconsistentes para revisão |
+
+A recuperação é implementada com a biblioteca padrão do Python, adequada ao tamanho atual da base. Normaliza caixa, acentos e formas de loja para a busca, preservando o texto original das citações. Não utiliza serviço externo de embeddings nem banco vetorial.
+
+| Versão de extração | Contexto e formato | Hipótese a avaliar |
+| --- | --- | --- |
+| v1 | Mensagem mascarada, zero-shot, sem RAG e com saída livre preservada | Estabelecer a referência inicial |
+| v2 | Mesma mensagem, persona, few-shot e cinco campos em JSON, sem RAG | Melhorar a organização e a consistência do formato |
+| v3 | Mesma mensagem, filtro de segurança, trechos RAG e seis campos em JSON, incluindo `regra_consultada` | Melhorar a fundamentação e permitir conferência da fonte |
+
+As versões usam o mesmo modelo e os parâmetros centralizados da execução. A comparação envolve tanto mudanças nos prompts quanto a restrição de saída da API em v2/v3. O benchmark ainda não foi executado; essas hipóteses não são resultados medidos. Em `extrair`, v1 e v2 são executadas antes do filtro específico do v3; esse filtro não protege retroativamente as outras versões.
 
 ## Base de conhecimento
 
@@ -38,7 +76,7 @@ A base vigente é o **manual v2026.3 dividido por assunto**, em [data/documents/
 | [10_exemplos.md](data/documents/manual_v2026_3/10_exemplos.md) | Exemplos sintéticos; fora do índice |
 | [11_resumo_rag.md](data/documents/manual_v2026_3/11_resumo_rag.md) | Nove blocos compactos, com privacidade obrigatória |
 
-Cada documento identifica versão, data, origem e uso; o corpo original foi preservado literalmente. O [manual v2026.3 integral](docs/referencias/manual_operacoes_saude_viva_v2026.3.md) foi arquivado para auditoria e fica fora do índice. O antigo `manual_operacoes_saude_viva.md`, v2026.1, foi removido por solicitação do usuário. A versão em Word continua em [docs/anexos/](docs/anexos/).
+Cada documento identifica versão, data, origem e uso; o corpo original foi preservado literalmente. O [manual v2026.3 integral](docs/referencias/manual_operacoes_saude_viva_v2026.3.md) foi arquivado para auditoria e fica fora do índice. O antigo `manual_operacoes_saude_viva.md`, v2026.1, foi removido por solicitação do usuário. A versão em Word é mencionada no histórico do projeto, mas a pasta `docs/anexos/` não está disponível nesta cópia do repositório.
 
 A divisão facilita manutenção e identificação das fontes. Ela preservou os 189 trechos e, nas seis perguntas de conferência, os mesmos IDs e pontuações; não foi medida melhoria de qualidade pela divisão física. Marcações de proposta e conteúdo sintético permanecem identificados.
 
@@ -54,17 +92,21 @@ Conforme esclarecimento do usuário em 21/11/2026, o documento convertido repres
 
 ## Próximas entregas
 
-1. Revisar os requisitos e as divergências entre manual e casos esperados.
-2. Preparar Python, acesso à API e os 16 casos de teste.
-3. Implementar e comparar v1/v2 para o checkpoint de **23/11/2026**.
-4. Integrar a recuperação existente à extração v3, implementar validações operacionais e consolidação em lote e avaliar extração e consolidação separadamente.
-5. Finalizar relatório de até oito páginas e pitch de sete minutos para **25/11/2026**.
+1. Revisar divergências entre manual e expectativas, preparar e congelar os 16 casos principais.
+2. Completar a validação operacional de loja, gravidade e ação; executar os mesmos casos em v1, v2 e v3 e calcular métricas com numeradores e denominadores.
+3. Implementar e avaliar a associação de relatos, atualizações e consolidação em lote, preservando ocorrências secundárias.
+4. Finalizar relatório de até oito páginas e pitch de sete minutos para **25/11/2026**, com evidências e limitações.
 
 ## Preparação e comandos locais
 
-Execute na raiz do repositório, no Windows PowerShell, com Python 3.12 instalado. Após a instalação do Python, reabra o terminal para atualizar os comandos disponíveis:
+Pré-requisitos: Windows, Python 3.12 e acesso à internet para instalar dependências. A consulta completa e a extração exigem uma chave da API da OpenAI com acesso ao modelo configurado; podem gerar cobrança. O diagnóstico e a recuperação local funcionam sem chave.
+
+### 1. Preparar o ambiente
+
+Abra o Windows PowerShell na raiz do repositório. Após instalar o Python, reabra o terminal para atualizar os comandos disponíveis:
 
 ```powershell
+Set-Location C:\Dev\extrator-ocorrencia-rag
 py -3.12 -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -e ".[dev]"
 .\.venv\Scripts\python.exe -m extrator_ocorrencia diagnostico
@@ -73,11 +115,61 @@ py -3.12 -m venv .venv
 .\.venv\Scripts\ruff.exe format --check src tests
 ```
 
-Os comandos usam diretamente o ambiente virtual e dispensam sua ativação. A opção `[dev]` instala o Ruff, usado para verificar estilo e formatação conforme a configuração do projeto; `ruff format --check` apenas verifica e não altera arquivos. Para consultar o manual a partir de outro diretório, informe `diagnostico --raiz C:\Dev\extrator-ocorrencia-rag`. O diagnóstico retorna código 0 quando o manual é legível, está em UTF-8 e não está vazio; retorna 1 em caso de falha. Isso verifica a leitura do arquivo, sem validar suas regras nem implementar recuperação.
+Os comandos usam diretamente o ambiente virtual e dispensam sua ativação. A opção `[dev]` instala o Ruff, usado para verificar estilo e formatação conforme a configuração do projeto; `ruff format --check` apenas verifica e não altera arquivos. Para consultar o manual a partir de outro diretório, informe `diagnostico --raiz C:\Dev\extrator-ocorrencia-rag`. O diagnóstico retorna código 0 quando a base pode ser lida e confere com o manifesto; retorna 1 em caso de falha. Verifica integridade documental, sem chamar a API, gerar respostas ou validar a correção operacional das regras.
 
-O manifesto inclui o SDK oficial `openai==3.58.0`, validado com Python 3.12.10. O `pip` pode acessar a rede para instalar as dependências e `setuptools`. No comando `consultar`, a configuração lê `OPENAI_API_KEY` e, opcionalmente, `OPENAI_MODEL` do `.env` local ignorado pelo Git; variáveis do processo têm precedência. Preserve a chave fora da conversa e do repositório. O modelo padrão validado é `gpt-6-luna`, com raciocínio desativado, limite de 900 tokens de saída por chamada, tempo limite de 30 segundos e nenhuma repetição automática. Outros modelos configurados precisam suportar esses parâmetros e JSON Schema; não há troca automática de modelo.
+O manifesto inclui o SDK oficial `openai==3.58.0`, validado com Python 3.12.10. O `pip` pode acessar a rede para instalar as dependências e `setuptools`. Nos comandos `consultar` e `extrair`, a configuração lê `OPENAI_API_KEY` e, opcionalmente, `OPENAI_MODEL` do `.env` local ignorado pelo Git; variáveis do processo têm precedência. Preserve a chave fora da conversa e do repositório. O modelo padrão validado é `gpt-6-luna`, com raciocínio desativado, limite de 900 tokens de saída por chamada, tempo limite de 30 segundos e nenhuma repetição automática. Outros modelos configurados precisam suportar esses parâmetros e JSON Schema; não há troca automática de modelo.
 
-### Executável Windows (fluxo simples no CMD)
+### 2. Conferir a recuperação sem usar a API
+
+```powershell
+.\.venv\Scripts\python.exe -m extrator_ocorrencia consultar "Qual ação para assalto à mão armada?" --somente-recuperar
+```
+
+Confira `trechos_recuperados`, IDs, fontes e pontuações no resultado. O estado `RECUPERADO` indica que houve recuperação local; não significa que o modelo respondeu. O terminal informa os caminhos do HTML e do JSON em `results\`.
+
+### 3. Configurar o acesso à API
+
+Se ainda não houver um `.env`, copie `.env.example` para `.env` na raiz do projeto. Edite somente a cópia local e preencha `OPENAI_API_KEY` com sua chave. Preserve o `.env` existente se já estiver configurado. `OPENAI_MODEL` é opcional; o padrão do código é `gpt-6-luna`. Uma variável do processo tem precedência sobre o arquivo.
+
+O `.env` é ignorado pelo Git. Não inclua a chave nas mensagens de teste, nos comandos de extração ou nos arquivos de documentação.
+
+### 4. Extrair uma mensagem e comparar v1, v2 e v3
+
+Exemplo de entrada sintética, sem resultado previamente medido:
+
+```powershell
+.\.venv\Scripts\python.exe -m extrator_ocorrencia extrair "Loja 02 Jardins: sistema PDV parado há 3 horas em horário comercial."
+```
+
+O comando processa **uma mensagem** e executa v1, v2 e v3, com até quatro chamadas à API quando todas as etapas prosseguem. Bloqueios e falhas podem interromper etapas. Para ler a mensagem de um arquivo UTF-8 já existente:
+
+```powershell
+.\.venv\Scripts\python.exe -m extrator_ocorrencia extrair --arquivo .\mensagem.txt
+```
+
+Informe texto entre aspas **ou** `--arquivo`. O limite é de 6.000 caracteres e, para arquivo, 24.000 bytes; o arquivo não representa um lote de mensagens.
+
+Quando há extração estruturada, v2 produz `loja`, `tipo_ocorrencia`, `gravidade`, `acao_necessaria` e `responsavel_contato`; v3 acrescenta `regra_consultada`. A saída livre de v1 permanece disponível. Ausências em loja e responsável usam `null` no v2 e `NÃO INFORMADO` no v3. O schema do v3 também admite `NÃO INFORMADO` para gravidade sem evidência; isso indica uma lacuna para revisão, não um quinto nível de gravidade.
+
+### 5. Consultar o manual
+
+Para fazer uma pergunta sobre as regras, em vez de extrair uma ocorrência:
+
+```powershell
+.\.venv\Scripts\python.exe -m extrator_ocorrencia consultar "Qual é a ação e o prazo para um assalto à mão armada na loja?"
+```
+
+O comando pode realizar até duas chamadas: filtro de segurança e resposta fundamentada. O contrato da consulta contém resposta e citações; ele é diferente do contrato de extração. Veja as opções e os estados nas seções abaixo.
+
+### 6. Abrir o resultado e conferir as pendências
+
+O terminal retorna `relatorio_html` e `registro_json`. Abra o caminho indicado em `relatorio_html` no navegador. Em execuções pelo Python, os arquivos ficam em `results\` na raiz usada pelo comando.
+
+No HTML de extração, confira a entrada comum, as respostas v1–v3, os trechos recuperados, as validações e os motivos de revisão. No JSON, confira a configuração, as chamadas, as respostas brutas mascaradas, a latência e o uso de tokens quando disponíveis. `EXECUTADO` indica execução, sem certificar acerto operacional; `REVISAO_NECESSARIA`, `BLOQUEADO` e `ERRO_TECNICO` precisam ser interpretados separadamente.
+
+A v2026.3 contém propostas pendentes: as respostas baseadas nela exigem revisão humana. A validação atual da extração confere campos, tipos, valores permitidos de gravidade e literalidade da citação no v3; a validação operacional completa de loja, gravidade e ação permanece pendente. Não há acionamento automático de pessoas ou sistemas externos. Relatórios de execução são locais e não devem ser versionados.
+
+### Executável Windows (alternativa ao Python)
 
 Depois de instalar as dependências de desenvolvimento, gere o executável autônomo:
 
@@ -141,14 +233,15 @@ Validação de integração em 23/11/2026: duas consultas sintéticas, quatro ch
 | --- | --- |
 | `pyproject.toml` | Metadados do pacote, requisito de Python e comando `extrator-ocorrencias` |
 | `src/extrator_ocorrencia/config.py` | Caminhos, configuração local, modelo e parâmetros |
-| `src/extrator_ocorrencia/cli.py` | Diagnóstico e consulta RAG por argumento ou arquivo |
+| `src/extrator_ocorrencia/cli.py` | Diagnóstico, consulta RAG e extração por argumento ou arquivo |
+| `src/extrator_ocorrencia/extracao.py` | Prompts v1–v3, execução comparativa e validação da extração |
 | `src/extrator_ocorrencia/base.py` e `rag.py` | Leitura do manifesto, integridade, trechos versionados e recuperação lexical |
 | `src/extrator_ocorrencia/assistente.py` e `api.py` | Consulta em duas etapas e cliente centralizado da OpenAI |
 | `src/extrator_ocorrencia/privacidade.py` e `relatorio.py` | Minimização, filtros e relatórios HTML/JSON |
 | `tests/` | Testes locais com `unittest` |
 | `data/documents/` | Base documental existente |
 | `data/datasets/` | Casos de avaliação; contém apenas os casos complementares em `complementares/` |
-| `docs/anexos/` | Versão em Word do manual v2026.3 |
+| `docs/anexos/` | Anexo Word mencionado no histórico; indisponível nesta cópia |
 | `data/examples/` | Seis perguntas sintéticas de demonstração, em `consultas_rag.jsonl` |
 | `results/` | Relatórios e auditorias locais, ignorados pelo Git |
 
